@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'JetBrains Mono', -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  background-color: #0a0a1a;
+  color: #e0e0ff;
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-lab-panel backdrop-blur-xl border border-lab-border rounded-2xl;
+  }
+
+  .tool-btn {
+    @apply w-12 h-12 flex items-center justify-center rounded-xl
+           bg-lab-panel border border-lab-border
+           text-lab-cyan transition-all duration-200
+           hover:border-lab-cyan hover:shadow-glow-cyan
+           hover:scale-105 cursor-pointer;
+  }
+
+  .tool-btn.active {
+    @apply border-lab-cyan shadow-glow-cyan bg-lab-cyan/10;
+  }
+
+  .slider-track {
+    @apply w-full h-2 rounded-full bg-lab-border appearance-none cursor-pointer;
+  }
+
+  .slider-track::-webkit-slider-thumb {
+    @apply appearance-none w-4 h-4 rounded-full bg-lab-cyan
+           shadow-glow-cyan cursor-pointer transition-transform
+           hover:scale-125;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 245, 255, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 245, 255, 0.5);
+}
