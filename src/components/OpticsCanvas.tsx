@@ -8,11 +8,13 @@ import {
   drawElement,
   drawNormals,
 } from '../engine/renderer';
+import { lightingAccumulator } from '../engine/lighting';
 
 export function OpticsCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number>(0);
+  const logicalSizeRef = useRef({ width: 0, height: 0 });
 
   const elements = useOpticsStore(s => s.elements);
   const settings = useOpticsStore(s => s.settings);
@@ -27,14 +29,17 @@ export function OpticsCanvas() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const w = canvas.width;
-    const h = canvas.height;
+    const w = logicalSizeRef.current.width;
+    const h = logicalSizeRef.current.height;
 
     drawBackground(ctx, w, h);
 
     if (settings.showGrid) {
       drawGrid(ctx, w, h);
     }
+
+    lightingAccumulator.compute(elements, settings);
+    lightingAccumulator.drawTo(ctx);
 
     drawRays(ctx, elements, settings);
 
@@ -55,13 +60,19 @@ export function OpticsCanvas() {
 
       const dpr = window.devicePixelRatio || 1;
       const rect = container.getBoundingClientRect();
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      canvas.style.width = `${rect.width}px`;
-      canvas.style.height = `${rect.height}px`;
+      const logicalWidth = rect.width;
+      const logicalHeight = rect.height;
+
+      canvas.width = logicalWidth * dpr;
+      canvas.height = logicalHeight * dpr;
+      canvas.style.width = `${logicalWidth}px`;
+      canvas.style.height = `${logicalHeight}px`;
       const ctx = canvas.getContext('2d');
       if (ctx) ctx.scale(dpr, dpr);
-      setCanvasSize(rect.width, rect.height);
+
+      logicalSizeRef.current = { width: logicalWidth, height: logicalHeight };
+      lightingAccumulator.setSize(logicalWidth, logicalHeight);
+      setCanvasSize(logicalWidth, logicalHeight);
     };
 
     resize();
